@@ -27,7 +27,7 @@ table(diamonds$cut)
 table(diamonds$color)
 table(diamonds$clarity)
 
-#Matriz de correlaci�n
+#Matriz de correlación
 cor_mat_carat <- diamonds %>%
   select(x, y, z, carat) %>%
   cor(use = "pairwise.complete.obs")
@@ -41,8 +41,8 @@ diamonds$color <- factor (diamonds$color, levels = c ("J" , "I", "H", "G", "F", 
 
 #Clarity
 
-#Se podr�a decir que existe una relaci�n negativa entre las dimensiones
-#y la claridad del diamante, entre m�s pequ�o es el diamante, m�s claro 
+#Se podría decir que existe una relación negativa entre las dimensiones
+#y la claridad del diamante, entre más pequño es el diamante, más claro 
 ggplot(data = diamonds) +
   aes(x = clarity, y = y) +
   geom_boxplot(color = "darkgray", fill = "blue", alpha = 0.7, outlier.color = "darksalmon") +
@@ -60,7 +60,7 @@ ggplot(data = diamonds) +
 
 #Cut
 
-#No hay relaci�n aparante, los cajas casi que se ubican en el mismo lugar, se traslapan
+#No hay relación aparante, los cajas casi que se ubican en el mismo lugar, se traslapan
 ggplot(data = diamonds) +
   aes(x = cut, y = y) +
   geom_boxplot(color = "darkgray", fill = "gray28", alpha = 0.7, outlier.color = "darksalmon") +
@@ -78,7 +78,7 @@ ggplot(data = diamonds) +
 
 #Color
 
-#Posible relaci�n, no es tan clara 
+#Posible relación, no es tan clara 
 ggplot(data = diamonds) +
   aes(x = color, y = y) +
   geom_boxplot(color = "darkgray", fill = "lightgoldenrod4", alpha = 0.7, outlier.color = "darksalmon") +
@@ -96,7 +96,7 @@ ggplot(data = diamonds) +
 
 #Carat
 
-#relaci�n que parece seguir una funci�n logar�tmica
+#relación que parece seguir una función logarítmica
 
 summary (diamonds$carat)
 
@@ -118,9 +118,9 @@ ggplot(data = diamonds) +
 
 #Depth
 
-#Gr�ficamente no se observa relaci�n
+#Gráficamente no se observa relación
 #Todo indica a que se debe a que - depth total depth percentage = z / mean(x, y) 
-#adem�s que las escalas de medidas son diferentes
+#además que las escalas de medidas son diferentes
 
 ggplot(data = diamonds) +
   aes(x = depth, y = x) + 
@@ -134,7 +134,7 @@ ggplot(data = diamonds) +
   aes(x = depth, y = z) + 
   geom_point(color = "gray", fill="black", alpha = 0.6)
 
-#Matriz de correlaci�n
+#Matriz de correlación
 cor_mat_depth <- diamonds %>%
   select(x, y, z, depth) %>%
   cor(use = "pairwise.complete.obs")
