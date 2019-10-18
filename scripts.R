@@ -1,3 +1,31 @@
+# The R language script for Homework 1.1
+
+   # Submitted by:
+
+#| Name                       | Student ID       |
+#|----------------------------|------------------|
+#| ANGULO MONTES LUIS EDUARDO |                  |
+#| KLIMAS MATEUSZ             | X3179625J        |
+#| RUIZ-TAGLE ORIOL JUAN LUIS |                  |
+#| TAHIRI ALAOUI OUSSAMA      | U183316          |
+#|-----------------------------------------------|
+
+#Loading needed libraries
+library(GGally)
+library(dplyr)
+
+# Load the diamonds data using a relative path
+# (this works only after setting the working directory,
+# most easily with the RStudio UI)
+
+diamonds <- read.csv("diamonds.csv", stringsAsFactors = FALSE)
+
+# Question 3.1
+
+# Question 3.2
+
+#-----------------------------------------------------
+
 # LUIS EDUARDO Script
 
 #Back up DB
