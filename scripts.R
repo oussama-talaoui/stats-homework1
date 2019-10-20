@@ -11,66 +11,61 @@
 #|-----------------------------------------------|
 
 #Loading needed libraries
-library(GGally)
-library(dplyr)
 
+library(dplyr)
+library(GGally)
+library(tidyverse)
+
+## Dataset preperation ###############################################
 # Load the diamonds data using a relative path
 # (this works only after setting the working directory,
 # most easily with the RStudio UI)
 
 diamonds <- read.csv("diamonds.csv", stringsAsFactors = FALSE)
 
-# Question 3.1
-
-# Question 3.2
-
-#-----------------------------------------------------
-
-# LUIS EDUARDO Script
-
-#Back up DB
-
-diamondsBU <- diamonds
-
-#checking for missing data and its number
+# Checking for missing data and its number
 sum(is.na(diamonds))
 
 # Basic statistical summary of the data set
 summary(diamonds)
 
-#ordenar
+# Checking for null values and outliers
+summary(diamonds[c("x","y","z")])
+
+## Question 3.1 ###############################################
+
+# Classifying
 diamonds <- arrange(diamonds, x)
 diamonds <- arrange(diamonds,desc(z))
 diamonds <- arrange(diamonds,desc(z))
 
-#Borrar los ceros
-
+# Removing the null values
 diamonds <- diamonds %>%
     filter (y < 30 & y >0) %>%
     filter (z < 30 & z >0) %>%
     filter (x > 0)
 
-#Frecuencia strings
+# Strings frequency
 table(diamonds$cut)
 table(diamonds$color)
 table(diamonds$clarity)
 
-#Matriz de correlación
+# Correlation matrix
 cor_mat_carat <- diamonds %>%
   select(x, y, z, carat) %>%
   cor(use = "pairwise.complete.obs")
 
-#Reorder a variable with a given list
+#Reorder the variables in a given list
 
 diamonds$clarity <- factor (diamonds$clarity, levels = c ("I1" , "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"))
 diamonds$color <- factor (diamonds$color, levels = c ("J" , "I", "H", "G", "F", "E", "D"))
 
-#Graph
+## Plotting
 
-#Clarity
+# Diamonds Clarity
 
-#Se podría decir que existe una relación negativa entre las dimensiones
-#y la claridad del diamante, entre más pequño es el diamante, más claro 
+# You could say that there is a negative relationship between the dimensions
+# and the clarity of the diamond, the smaller the diamond is, the clearer
 ggplot(data = diamonds) +
   aes(x = clarity, y = y) +
   geom_boxplot(color = "darkgray", fill = "blue", alpha = 0.7, outlier.color = "darksalmon") +
@@ -86,9 +81,9 @@ ggplot(data = diamonds) +
   geom_boxplot(color = "darkgray", fill = "darkseagreen", alpha = 0.7, outlier.color = "darksalmon") +
   labs (title = "Relation between clarity and the depth of the diamond", y = "Depth of the diamond (z)", x = "Clarity - measurement of how clear the diamond is (I1 (worst), ... , IF (best))") 
 
-#Cut
+# Diamonds Cut
 
-#No hay relación aparante, los cajas casi que se ubican en el mismo lugar, se traslapan
+# There is no apparent relationship, the boxes almost at the same level, overlap
 ggplot(data = diamonds) +
   aes(x = cut, y = y) +
   geom_boxplot(color = "darkgray", fill = "gray28", alpha = 0.7, outlier.color = "darksalmon") +
@@ -104,9 +99,9 @@ ggplot(data = diamonds) +
   geom_boxplot(color = "darkgray", fill = "darkslateblue", alpha = 0.7, outlier.color = "darksalmon") +
   labs (title = "Relation between cut and depth of the diamond", y = "Depth of the diamond (z)", x = "Cut - quality of the cut") 
 
-#Color
+# Diamonds Color
 
-#Posible relación, no es tan clara 
+# Possible relationship, but it is not so clear 
 ggplot(data = diamonds) +
   aes(x = color, y = y) +
   geom_boxplot(color = "darkgray", fill = "lightgoldenrod4", alpha = 0.7, outlier.color = "darksalmon") +
@@ -122,10 +117,9 @@ ggplot(data = diamonds) +
   geom_boxplot(color = "darkgray", fill = "darkslateblue", alpha = 0.7, outlier.color = "darksalmon") +
   labs (title = "Relation between color and depth of the diamond", y = "Depth of the diamond (z)", x = "Color - diamond colour, from J (worst) to D (best)") 
 
-#Carat
+# Diamonds Carat
 
-#relación que parece seguir una función logarítmica
-
+# Relationship that seems to follow a logarithmic function
 summary (diamonds$carat)
 
 ggplot(data = diamonds) +
@@ -143,13 +137,11 @@ ggplot(data = diamonds) +
   geom_point(color = "yellow", fill="black", alpha = 0.6)+
   labs (title = "Relation between carat and the depth of the diamond", y = "Depth of the diamond (z)", x = "Weight of the diamond") 
 
+# Diamonds Depth
 
-#Depth
-
-#Gráficamente no se observa relación
-#Todo indica a que se debe a que - depth total depth percentage = z / mean(x, y) 
-#además que las escalas de medidas son diferentes
-
+# Graphically no relationship is observed
+# Everything indicates why it is because - depth total depth percentage = z / mean (x, y)
+# also that the scales of measurements are different
 ggplot(data = diamonds) +
   aes(x = depth, y = x) + 
   geom_point(color = "gray", fill="black", alpha = 0.6)
@@ -162,10 +154,12 @@ ggplot(data = diamonds) +
   aes(x = depth, y = z) + 
   geom_point(color = "gray", fill="black", alpha = 0.6)
 
-#Matriz de correlación
+# Correlation matrix
 cor_mat_depth <- diamonds %>%
   select(x, y, z, depth) %>%
   cor(use = "pairwise.complete.obs")
+
+## Question 3.2 ###############################################
 
 #---------------------------------
 #MATEUSZ Script
@@ -196,8 +190,6 @@ for(i in 1:nrow(diamondsData)){
   coincidences <- sum(diamondsdf$color == row$color & diamondsdf$clarity == row$clarity)
   diamondsData[i,"numberDiamonds"] <- coincidences
 }
-
-library(tidyverse)
 
 # Set a number of 'empty bar' to add at the end of each group
 empty_bar <- 3
