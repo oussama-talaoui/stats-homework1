@@ -168,19 +168,18 @@ diamonds <- read.csv(file="/Users/Mati/Downloads/diamonds.csv", header=TRUE, sep
 diamondsdf <- as.data.frame(diamonds)
 diamondsdf$X <- NULL
 
-#Now we clean the dataframe eliminating the rows that have x, y or z as a 0 value
+# Now we clean the dataframe eliminating the rows that have x, y or z as a 0 value
 diamondsdf <- subset(diamondsdf, diamondsdf$x !=0 & diamondsdf$y !=0 & diamondsdf$z !=0)
 
-#Outliers are removed
+# Outliers are removed
 diamondsdf <- diamondsdf[order(-diamondsdf$y, decreasing = F),]
 diamondsdf <- diamondsdf[-c(1,2),]
 
 diamondsdf <- diamondsdf[order(-diamondsdf$z, decreasing = F),]
 diamondsdf <- diamondsdf[-c(1),]
 
-
 diamondsData <- data.frame(
-  #We put the clarities in this order to have the qualities in the right order
+  # We put the clarities in this order to have the qualities in the right order
   clarity = rep(c('I1', 'SI2', 'SI1', 'VS2', 'VS1', 'VVS2', 'VVS1', 'IF'), length(unique(diamondsdf$color))),
   color = rep(sort(unique(diamondsdf$color), decreasing = TRUE), each=length(unique(diamondsdf$clarity)))
 )
@@ -203,24 +202,26 @@ diamondsData$id <- seq(1, nrow(diamondsData))
 # Get the name and the y position of each label
 label_data <- diamondsData
 number_of_bar <- nrow(label_data)
-angle <- 90 - 360 * (label_data$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
+# We substract 0.5 here because the letter must have the angle of the center of the bars.
+# Not extreme right(1) or extreme left(0)
+angle <- 90 - 360 * (label_data$id-0.5) /number_of_bar
 label_data$hjust <- ifelse( angle < -90, 1, 0)
 label_data$angle <- ifelse(angle < -90, angle+180, angle)
 
-# prepare a data frame for base lines
+# Preparing a data frame for base lines
 base_data <- diamondsData %>% 
   group_by(color) %>% 
   summarize(start=min(id), end=max(id) - empty_bar) %>% 
   rowwise() %>% 
   mutate(title=mean(c(start, end)))
 
-# prepare a data frame for grid (scales)
+# Preparing a data frame for grid (scales)
 grid_data <- base_data
 grid_data$end <- grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
 grid_data$start <- grid_data$start - 1
 grid_data <- grid_data[-1,]
 
-# Make the plot
+# Creating the plots
 p <- ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +     
   
   geom_bar(aes(x=as.factor(id), y=numberDiamonds, fill=color), stat="identity", alpha=0.5) +
@@ -247,7 +248,8 @@ p <- ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +
   geom_text(data=label_data, aes(x=id, y=2500, label=clarity, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=2, angle= label_data$angle, inherit.aes = FALSE ) +
   
   geom_segment(data=base_data, aes(x = start, y = -5, xend = end, yend = -5), colour = "black", alpha=0.8, size=0.6 , inherit.aes = FALSE ) 
-  #geom_text(data=base_data, aes(x = title, y = -20, label=color), hjust=c(1,1,1,1,0,0,0), colour = "black", alpha=0.8, size=7, fontface="bold", inherit.aes = FALSE)
+  
+  # geom_text(data=base_data, aes(x = title, y = -20, label=color), hjust=c(1,1,1,1,0,0,0), colour = "black", alpha=0.8, size=7, fontface="bold", inherit.aes = FALSE)
 
 #---------------------------------
 #Juan Luis´s Script
@@ -255,18 +257,16 @@ p <- ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +
 clean <- subset(df, df$x != 0 & df$y != 0 & df$z != 0)
 clean <- subset(clean, clean$y <= 11.0 & clean$z <= 11.0)
 
-
 head(clean[order(clean$z, decreasing = TRUE),],10)
 
 clean <- clean[order(clean$price),]
 
-
-#Generate the model
+# Generating the model
 model <- lm(formula = log1p(price) ~ x + y + z,data = clean)
 summary(model)
 predictions <- predict(model,select(clean,x,y,z))
 
-#Potting predictions
+# Plotting predictions
 plot(exp(predictions),type = "p",col="red",# log="y",
         main="Diamond price prediction",
         xlab="Diamonds in the dataset",
@@ -281,8 +281,7 @@ error <- abs((exp(predictions) - clean$price)/clean$price)
 mean(error)
 var(error)
 
-
-#Plot error
+# Plotting the error
 plot(100*error[0:length(error)],col = "orange",
         main="Mean absolute percentage error",
         xlab="Diamonds in the dataset",
