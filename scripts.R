@@ -173,10 +173,42 @@ cor_mat_depth <- diamonds %>%
 
 ## Question 3.2 ###############################################
 
+clean <- subset(diamonds, diamonds$x != 0 & diamonds$y != 0 & diamonds$z != 0)
+clean <- subset(clean, clean$y <= 11.0 & clean$z <= 11.0)
+
+head(clean[order(clean$z, decreasing = TRUE),],10)
+
+clean <- clean[order(clean$price),]
+
+# Generating the model
+model <- lm(formula = log1p(price) ~ x + y + z,data = clean)
+summary(model)
+predictions <- predict(model,select(clean,x,y,z))
+
+# Plotting predictions
+plot(exp(predictions),type = "p",col="red",
+        # log="y",
+        main="Diamond price prediction",
+        xlab="Diamonds in the dataset",
+        ylab="Price in USD")
+
+lines(clean$price, col = "green")
+legend(x = "topleft",legend=c("Predictions", "Real prices"),
+       col=c("red", "green"), lty=1:2, box.lty=0)
+
+error <- abs((exp(predictions) - clean$price)/clean$price)
+
+mean(error)
+var(error)
+
+# Plotting the error
+plot(100*error[0:length(error)],col = "orange",
+        main="Mean absolute percentage error",
+        xlab="Diamonds in the dataset",
+        ylab="% error")
 #---------------------------------
 #MATEUSZ Script
 
-diamonds <- read.csv(file="/Users/Mati/Downloads/diamonds.csv", header=TRUE, sep=",")
 diamondsdf <- as.data.frame(diamonds)
 diamondsdf$X <- NULL
 
@@ -262,39 +294,3 @@ p <- ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +
   geom_segment(data=base_data, aes(x = start, y = -5, xend = end, yend = -5), colour = "black", alpha=0.8, size=0.6 , inherit.aes = FALSE ) 
   
   # geom_text(data=base_data, aes(x = title, y = -20, label=color), hjust=c(1,1,1,1,0,0,0), colour = "black", alpha=0.8, size=7, fontface="bold", inherit.aes = FALSE)
-
-#---------------------------------
-#Juan Luis´s Script
-
-clean <- subset(df, df$x != 0 & df$y != 0 & df$z != 0)
-clean <- subset(clean, clean$y <= 11.0 & clean$z <= 11.0)
-
-head(clean[order(clean$z, decreasing = TRUE),],10)
-
-clean <- clean[order(clean$price),]
-
-# Generating the model
-model <- lm(formula = log1p(price) ~ x + y + z,data = clean)
-summary(model)
-predictions <- predict(model,select(clean,x,y,z))
-
-# Plotting predictions
-plot(exp(predictions),type = "p",col="red",# log="y",
-        main="Diamond price prediction",
-        xlab="Diamonds in the dataset",
-        ylab="Price in USD")
-
-lines(clean$price, col = "green")
-legend(x = "topleft",legend=c("Predictions", "Real prices"),
-       col=c("red", "green"), lty=1:2, box.lty=0)
-
-error <- abs((exp(predictions) - clean$price)/clean$price)
-
-mean(error)
-var(error)
-
-# Plotting the error
-plot(100*error[0:length(error)],col = "orange",
-        main="Mean absolute percentage error",
-        xlab="Diamonds in the dataset",
-        ylab="% error")
