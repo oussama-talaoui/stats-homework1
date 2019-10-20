@@ -286,19 +286,3 @@ plot(100*error[0:length(error)],col = "orange",
         main="Mean absolute percentage error",
         xlab="Diamonds in the dataset",
         ylab="% error")
-
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
