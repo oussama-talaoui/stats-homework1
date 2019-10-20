@@ -1,4 +1,4 @@
-# The R language script for Homework 1.1
+# The R language script for Homework 1.1, created using RStudio.
 
    # Submitted by:
 
@@ -41,10 +41,30 @@ sum(is.na(diamonds))
 # Basic statistical summary of the data set
 summary(diamonds)
 
-# Checking for null values and outliers
+# Boxplot to visualize the outliers
+boxplot(diamonds$x, diamonds$y, diamonds$z, names=c("x","y","z"),xlab="coordinates", ylab="size",main="Outliers of x, y and z")
+
+# Now we clean the dataframe eliminating the rows that have x, y or z as a 0 value
+diamonds <- subset(diamonds, diamonds$x !=0 & diamonds$y !=0 & diamonds$z !=0)
+
+# Now lets have a quick overview about the data that we have in the x, y and z coordinates
+# checking for null values and outliers
+
 summary(diamonds[c("x","y","z")])
 
-## Question 3.1 ###############################################
+# Now we order the dataframe first by y and then by z to check if the outliers are actually wrong data or not,
+# and then we eliminate the considered ones
+
+diamonds <- diamonds[order(-diamonds$y, decreasing = F),]
+# Deleting the first and second outlier
+diamonds <- diamonds[-c(1,2),]
+
+diamonds <- diamonds[order(-diamonds$z, decreasing = F),]
+# Deleting the first outlier
+diamonds <- diamonds[-c(1),]
+
+##  2.3 Question ###############################################
+# Which is the relation between each characteristic and the dimensions?
 
 # Classifying
 diamonds <- arrange(diamonds, x)
@@ -166,12 +186,9 @@ ggplot(data = diamonds) +
   aes(x = depth, y = z) + 
   geom_point(color = "gray", fill="black", alpha = 0.6)
 
-# Correlation matrix
-cor_mat_depth <- diamonds %>%
-  select(x, y, z, depth) %>%
-  cor(use = "pairwise.complete.obs")
-
-## Question 3.2 ###############################################
+##  2.4 Question ###############################################
+# Is it sufficient to know the dimensions (x,y,z) of the diamond to determine its price?
+# With which error rate?
 
 clean <- subset(diamonds, diamonds$x != 0 & diamonds$y != 0 & diamonds$z != 0)
 clean <- subset(clean, clean$y <= 11.0 & clean$z <= 11.0)
@@ -206,8 +223,9 @@ plot(100*error[0:length(error)],col = "orange",
         main="Mean absolute percentage error",
         xlab="Diamonds in the dataset",
         ylab="% error")
-#---------------------------------
-#MATEUSZ Script
+
+## 2.5 Question ###############################################
+# What is the distribution of the diamonds depending on the color and clarity?
 
 diamondsdf <- as.data.frame(diamonds)
 diamondsdf$X <- NULL
@@ -246,6 +264,7 @@ diamondsData$id <- seq(1, nrow(diamondsData))
 # Get the name and the y position of each label
 label_data <- diamondsData
 number_of_bar <- nrow(label_data)
+
 # We substract 0.5 here because the letter must have the angle of the center of the bars.
 # Not extreme right(1) or extreme left(0)
 angle <- 90 - 360 * (label_data$id-0.5) /number_of_bar
@@ -266,7 +285,7 @@ grid_data$start <- grid_data$start - 1
 grid_data <- grid_data[-1,]
 
 # Creating the plots
-p <- ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +     
+ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +     
   
   geom_bar(aes(x=as.factor(id), y=numberDiamonds, fill=color), stat="identity", alpha=0.5) +
   
@@ -291,6 +310,4 @@ p <- ggplot(diamondsData, aes(x=as.factor(id), y=numberDiamonds, fill=color)) +
   coord_polar() + 
   geom_text(data=label_data, aes(x=id, y=2500, label=clarity, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=2, angle= label_data$angle, inherit.aes = FALSE ) +
   
-  geom_segment(data=base_data, aes(x = start, y = -5, xend = end, yend = -5), colour = "black", alpha=0.8, size=0.6 , inherit.aes = FALSE ) 
-  
-  # geom_text(data=base_data, aes(x = title, y = -20, label=color), hjust=c(1,1,1,1,0,0,0), colour = "black", alpha=0.8, size=7, fontface="bold", inherit.aes = FALSE)
+  geom_segment(data=base_data, aes(x = start, y = -5, xend = end, yend = -5), colour = "black", alpha=0.8, size=0.6 , inherit.aes = FALSE )
