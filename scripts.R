@@ -13,16 +13,25 @@
 # Installing and loading needed libraries
 install.packages("dplyr")
 install.packages("GGally")
+install.packages("rstudioapi")
 install.packages("tidyverse")
 
 library(dplyr)
 library(GGally)
+library(rstudioapi)
 library(tidyverse)
 
 ## Dataset preperation ###############################################
-# Load the diamonds data using a relative path
+# Set working directory and load the diamonds data using a relative path
 # (this works only after setting the working directory,
 # most easily with the RStudio UI)
+
+# the following line is for getting the path of your current open file
+current_path <- getActiveDocumentContext()$path 
+# The next line set the working directory to the relevant one:
+setwd(dirname(current_path ))
+# you can make sure you are in the right directory
+print( getwd() )
 
 diamonds <- read.csv("diamonds.csv", stringsAsFactors = FALSE)
 
