@@ -10,7 +10,10 @@
 #| TAHIRI ALAOUI OUSSAMA      | U183316          |
 #|-----------------------------------------------|
 
-#Loading needed libraries
+# Installing and loading needed libraries
+install.packages("dplyr")
+install.packages("GGally")
+install.packages("tidyverse")
 
 library(dplyr)
 library(GGally)
