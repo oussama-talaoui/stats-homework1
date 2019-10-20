@@ -273,6 +273,13 @@ head(clean[order(clean$z, decreasing = TRUE),],10)
 
 clean <- clean[order(clean$price),]
 
+
+#plot of correlation matrix
+library(corrplot)
+res <- cor(clean[, sapply(clean, is.numeric)])
+corrplot(res, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+
 # Generating the model
 model <- lm(formula = log1p(price) ~ x + y + z,data = clean)
 summary(model)
@@ -287,6 +294,17 @@ plot(exp(predictions),type = "p",col="red",# log="y",
 lines(clean$price, col = "green")
 legend(x = "topleft",legend=c("Predictions", "Real prices"),
        col=c("red", "green"), lty=1:2, box.lty=0)
+
+#With logarithmic scale
+plot(exp(predictions),type = "p",col="red", log="y",
+        main="Diamond price prediction",
+        xlab="Diamonds in the dataset",
+        ylab="Price in USD")
+
+lines(clean$price, col = "green")
+legend(x = "topleft",legend=c("Predictions", "Real prices"),
+       col=c("red", "green"), lty=1:2, box.lty=0)
+
 
 error <- abs((exp(predictions) - clean$price)/clean$price)
 
